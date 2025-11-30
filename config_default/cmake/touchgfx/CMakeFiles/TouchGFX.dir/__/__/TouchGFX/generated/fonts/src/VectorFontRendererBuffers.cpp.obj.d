@@ -1,0 +1,31 @@
+cmake/touchgfx/CMakeFiles/TouchGFX.dir/__/__/TouchGFX/generated/fonts/src/VectorFontRendererBuffers.cpp.obj: \
+ C:/TouchGFXProjects/MyApplication/TouchGFX/generated/fonts/src/VectorFontRendererBuffers.cpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/VectorFontRendererImpl.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/hal/Types.hpp \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/assert.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/_ansi.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/newlib.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/_newlib_version.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/sys/config.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/machine/ieeefp.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/sys/features.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/include/stdint.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/stdint.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/machine/_default_types.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/sys/_intsup.h \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/sys/_stdint.h \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/hal/Config.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/hal/VectorFontRenderer.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/Font.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/Unicode.hpp \
+ C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.100.202509120712/tools/bin/../lib/gcc/arm-none-eabi/13.3.1/include/stdarg.h \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/hal/VectorRenderer.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/Matrix3x3.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/hal/VGData.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/widgets/Widget.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/Drawable.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/Bitmap.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/events/ClickEvent.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/Event.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/events/DragEvent.hpp \
+ C:/TouchGFXProjects/MyApplication/Middlewares/ST/touchgfx/framework/include/touchgfx/events/GestureEvent.hpp
