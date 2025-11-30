@@ -19,7 +19,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "cmsis_os.h"
 #include "app_touchgfx.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -81,10 +80,8 @@ QSPI_HandleTypeDef hqspi;
 SRAM_HandleTypeDef hsram1;
 SRAM_HandleTypeDef hsram2;
 
-osThreadId defaultTaskHandle;
-osThreadId TouchGFXTaskHandle;
 /* USER CODE BEGIN PV */
-osThreadId micDataThreadHandle;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,9 +93,6 @@ static void MX_DMA2D_Init(void);
 static void MX_QUADSPI_Init(void);
 static void MX_FMC_Init(void);
 static void MX_DFSDM1_Init(void);
-void StartDefaultTask(void const * argument);
-extern void TouchGFX_Task(void const * argument);
-
 /* USER CODE BEGIN PFP */
 #if !defined(USE_BSP_DRIVER)
 static uint8_t QSPI_ResetMemory(QSPI_HandleTypeDef *hqspi);
@@ -113,7 +107,6 @@ extern void TouchGFX_TickHandler(uint8_t PinStatus);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #define MIC_BUFFER_SIZE 1024
-SemaphoreHandle_t xSemaphore;
 uint32_t mic_data[MIC_BUFFER_SIZE];
 uint16_t startlen = 0;
 uint32_t mic_max = 0;
@@ -146,22 +139,7 @@ void HAL_DFSDM_FilterRegConvHalfCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_
     }
     // xSemaphoreGiveFromISR(xSemaphore, NULL);
 }
-void micTask(const void *argument) {
-  // // xSemaphore = xSemaphoreCreateBinary();
-  //   // for (uint16_t i = 0; i < 50; i++) {
-  //     // if (xSemaphoreTake(xSemaphore, 900) == pdTRUE) {
-  //       for (uint16_t i = 0; i < 50; i++) {
-  //         mic_buf[i + startlen] += mic_data[i + startlen];
-  //       }
-  //     // }
-  //   // }
-  //   for (uint16_t i = 0; i < 128; i++) {
-  //     //rescale to be between 0 and 128
-  //     dispbuf[i] = mic_buf[i] / 4211081221;
-  //     mic_buf[i] = 0;
-  //   }
-    // osDelay(1000);
-  }
+
 
 /* USER CODE END 0 */
 
@@ -202,53 +180,15 @@ int main(void)
   MX_FMC_Init();
   MX_DFSDM1_Init();
   MX_TouchGFX_Init();
-  /* Call PreOsInit function */
-  MX_TouchGFX_PreOSInit();
   /* USER CODE BEGIN 2 */
-
-  /* USER CODE END 2 */
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
-
-  /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
-  /* definition and creation of TouchGFXTask */
-  osThreadDef(TouchGFXTask, TouchGFX_Task, osPriorityNormal, 0, 2048);
-  TouchGFXTaskHandle = osThreadCreate(osThread(TouchGFXTask), NULL);
-
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
   HAL_DFSDM_FilterRegularStart_DMA(&hdfsdm1_filter0, (int32_t *)mic_data, MIC_BUFFER_SIZE);
-  // osThreadDef(micTask, micTask, osPriorityHigh, 0, 256);
-  // micDataThreadHandle = osThreadCreate(osThread(micTask), NULL);
-  /* USER CODE END RTOS_THREADS */
-
-  /* Start scheduler */
-  osKernelStart();
-
-  /* We should never get here as control is now taken by the scheduler */
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    MX_TouchGFX_Process();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -577,7 +517,7 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel4_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
 
 }
@@ -695,7 +635,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LCD_BL_CTRL_GPIO_Port, LCD_BL_CTRL_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LCD_BL_CTRL_GPIO_Port, LCD_BL_CTRL_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(MCU_ACTIVE_GPIO_Port, MCU_ACTIVE_Pin, GPIO_PIN_RESET);
@@ -750,7 +690,7 @@ static void MX_GPIO_Init(void)
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
@@ -1079,24 +1019,6 @@ static uint8_t QSPI_HighPerfMode(QSPI_HandleTypeDef *hqspi, uint8_t Operation)
 #endif /* ! USE_BSP_DRIVER */
 
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument)
-{
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(100);
-  }
-  /* USER CODE END 5 */
-}
 
 /**
   * @brief  Period elapsed callback in non blocking mode

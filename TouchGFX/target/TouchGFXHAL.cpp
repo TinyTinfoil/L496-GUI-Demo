@@ -30,8 +30,6 @@
 #include <touchgfx/hal/GPIO.hpp>
 #include <CortexMMCUInstrumentation.hpp>
 #include <KeySampler.hpp>
-#include "FreeRTOS.h"
-#include "task.h"
 
 void initLCD(void);
 void setWindow(uint16_t Xpos, uint16_t Ypos, uint16_t Xwidth, uint16_t Height);
@@ -268,7 +266,7 @@ void setWindow(uint16_t Xpos, uint16_t Ypos, uint16_t Xwidth, uint16_t Height)
 
 extern "C" {
 
-    portBASE_TYPE IdleTaskHook(void* p)
+    int IdleTaskHook(void* p)
     {
         if ((int)p) //idle task sched out
         {
@@ -278,7 +276,7 @@ extern "C" {
         {
             touchgfx::HAL::getInstance()->setMCUActive(false);
         }
-        return pdTRUE;
+        return 1;
     }
 }
 

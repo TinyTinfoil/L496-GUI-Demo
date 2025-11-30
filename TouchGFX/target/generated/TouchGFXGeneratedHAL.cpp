@@ -47,6 +47,8 @@ void TouchGFXGeneratedHAL::initialize()
 {
     HAL::initialize();
     registerEventListener(*(Application::getInstance()));
+    enableLCDControllerInterrupt();
+    enableInterrupts();
     setFrameBufferStartAddresses((void*)frameBuf, (void*)0, (void*)0);
 }
 
@@ -77,6 +79,7 @@ bool TouchGFXGeneratedHAL::beginFrame()
 void TouchGFXGeneratedHAL::endFrame()
 {
     HAL::endFrame();
+    touchgfx::OSWrappers::signalRenderingDone();
 }
 
 uint16_t* TouchGFXGeneratedHAL::getTFTFrameBuffer() const

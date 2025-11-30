@@ -27,8 +27,8 @@ cubemx_middlewares_path := Middlewares
 Drivers_path := Drivers
 
 # Get OS path
-touchgfx_os_path := $(touchgfx_middlewares_path)/Third_Party/FreeRTOS
-cubemx_os_path := $(cubemx_middlewares_path)/Third_Party/FreeRTOS
+# touchgfx_os_path := $(touchgfx_middlewares_path)/Third_Party/FreeRTOS
+# cubemx_os_path := $(cubemx_middlewares_path)/Third_Party/FreeRTOS
 
 # Get identification of this system
 ifeq ($(OS),Windows_NT)
@@ -86,24 +86,24 @@ include $(application_path)/TouchGFX/config/gcc/app.mk
 # corrects TouchGFX Path
 touchgfx_path := ${subst ../,,$(touchgfx_path)}
 
-os_source_files := \
-    $(cubemx_os_path)/Source/croutine.c \
-    $(cubemx_os_path)/Source/list.c \
-    $(cubemx_os_path)/Source/queue.c \
-    $(cubemx_os_path)/Source/tasks.c \
-    $(cubemx_os_path)/Source/timers.c \
-    $(cubemx_os_path)/Source/CMSIS_RTOS/cmsis_os.c
+# os_source_files := \
+#     $(cubemx_os_path)/Source/croutine.c \
+#     $(cubemx_os_path)/Source/list.c \
+#     $(cubemx_os_path)/Source/queue.c \
+#     $(cubemx_os_path)/Source/tasks.c \
+#     $(cubemx_os_path)/Source/timers.c \
+#     $(cubemx_os_path)/Source/CMSIS_RTOS/cmsis_os.c
 
-os_include_paths := \
-    $(cubemx_os_path)/Source/include \
-    $(cubemx_os_path)/Source/CMSIS_RTOS
+# os_include_paths := \
+#     $(cubemx_os_path)/Source/include \
+#     $(cubemx_os_path)/Source/CMSIS_RTOS
 
-os_source_files += \
-    $(touchgfx_os_path)/Source/portable/MemMang/heap_4.c \
-    $(touchgfx_os_path)/Source/portable/GCC/ARM_CM4F/port.c 
+# os_source_files += \
+#     $(touchgfx_os_path)/Source/portable/MemMang/heap_4.c \
+#     $(touchgfx_os_path)/Source/portable/GCC/ARM_CM4F/port.c 
 
-os_include_paths += \
-    $(touchgfx_os_path)/Source/portable/GCC/ARM_CM4F 
+# os_include_paths += \
+#     $(touchgfx_os_path)/Source/portable/GCC/ARM_CM4F 
 
 ifeq ($(UNAME), Linux)
 imageconvert_executable := $(touchgfx_path)/framework/tools/imageconvert/build/linux/imageconvert.out
@@ -236,7 +236,6 @@ board_cpp_files :=
 board_include_paths := \
     Drivers/CMSIS/Device/ST/STM32L4xx/Include \
     Drivers/CMSIS/Include \
-    Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
     Drivers/BSP/Components/Common
 
 ifeq ($(use_bsp_driver), 1)
