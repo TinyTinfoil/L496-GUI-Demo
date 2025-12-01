@@ -23,6 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "arm_math_types.h"
+#include "dsp/transform_functions.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_dfsdm.h"
 #include "stm32l4xx_hal_dma.h"
@@ -36,6 +38,8 @@
 #include "stm32l496g_discovery_lcd.h"
 #endif /* ! USE_BSP_DRIVER */
 #include "ui_bridge.h"
+#include <stdbool.h>
+#include "arm_math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,38 +111,43 @@ extern void TouchGFX_TickHandler(uint8_t PinStatus);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #define MIC_BUFFER_SIZE 1024
+// #define SHOW_WAVEFORM
 uint32_t mic_data[MIC_BUFFER_SIZE];
 uint16_t startlen = 0;
 uint32_t mic_max = 0;
 uint32_t mic_min = 4294967295;
-uint32_t mic_buf[MIC_BUFFER_SIZE];
+uint32_t mic_buf[MIC_BUFFER_SIZE] = {0};
+bool mic_ready = false;
+//State control
+//-1 = clear buffer
+// 0-max_avg-1 = averaging (add)
+// max_avg -> halt and wait
+int16_t avg_count = -1;
+int16_t max_avg = 1;
 void HAL_DFSDM_FilterRegConvCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter){
-    startlen = 50;
-
-    for (uint16_t i = MIC_BUFFER_SIZE/2; i < MIC_BUFFER_SIZE; i++) {
-        mic_buf[i] = mic_data[i];
-    }
-    for (uint16_t i = 0; i < 128; i++) {
-      if (mic_buf[i] > mic_max) {
-        mic_max = mic_buf[i];
+    if (!mic_ready) {
+      if (mic_data[MIC_BUFFER_SIZE-1] < 0x00FFFFFF) mic_ready = true;
+    } else {
+      if (avg_count >= 0 && avg_count < max_avg) {
+        avg_count++;
+        for (int i = MIC_BUFFER_SIZE/2; i < MIC_BUFFER_SIZE; i++) {
+          mic_buf[i] += mic_data[i];
+        }
       }
-      if (mic_buf[i] < mic_min) {
-        mic_min = mic_buf[i];
-      }
-    }
-    for (uint16_t i = 0; i < 128; i++) {
-      //rescale to be between 0 and 128
-      dispbuf[i] =(mic_buf[i] - mic_min)/((mic_max - mic_min)/128);
-      mic_buf[i] = 0;
     }
 }
 void HAL_DFSDM_FilterRegConvHalfCpltCallback(DFSDM_Filter_HandleTypeDef *hdfsdm_filter){
-    startlen = 0;
-    for (uint16_t i = 0; i < MIC_BUFFER_SIZE/2; i++) {
-        mic_buf[i] += mic_data[i] - 4274487297;
+    if (mic_ready){
+      if (avg_count >= 0 && avg_count < max_avg) {
+        for (int i =0; i < MIC_BUFFER_SIZE/2; i++) {
+          mic_buf[i] += mic_data[i];
+        }
+      }
     }
-    // xSemaphoreGiveFromISR(xSemaphore, NULL);
 }
+arm_rfft_fast_instance_f32 fft;
+float32_t fft_output[MIC_BUFFER_SIZE];
+float32_t mag_fft_output[MIC_BUFFER_SIZE/2];
 
 
 /* USER CODE END 0 */
@@ -181,6 +190,7 @@ int main(void)
   MX_DFSDM1_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
+  arm_rfft_fast_init_f32(&fft,MIC_BUFFER_SIZE);
   HAL_DFSDM_FilterRegularStart_DMA(&hdfsdm1_filter0, (int32_t *)mic_data, MIC_BUFFER_SIZE);
   /* USER CODE END 2 */
 
@@ -192,6 +202,42 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if (avg_count == max_avg) {
+#ifndef SHOW_WAVEFORM
+      for (int i = 0; i< MIC_BUFFER_SIZE; i++) {
+        mag_fft_output[i] = (float32_t) mic_buf[i]; //convert to float
+      }
+      arm_rfft_fast_f32(&fft, mag_fft_output, fft_output,0);
+      arm_cmplx_mag_f32(fft_output, mag_fft_output, MIC_BUFFER_SIZE / 2);
+      for (int i = 0; i < MIC_BUFFER_SIZE / 2; i++) {
+        mic_buf[i] = (uint32_t) mag_fft_output[i+50]; //overwrite existing buffer
+      }
+#endif
+      mic_min = 4294967295;
+      mic_max = 0;
+      for (uint16_t i = 0; i < 128; i++) {
+        if (mic_buf[i] > mic_max) {
+          mic_max = mic_buf[i];
+        }
+        if (mic_buf[i] < mic_min) {
+          mic_min = mic_buf[i];
+        }
+        for (uint16_t i = 0; i < 128; i++) {
+          // rescale to be between 0 and 128
+          dispbuf[i] = (mic_buf[i] - mic_min) / ((mic_max - mic_min) / 128);
+        }
+        avg_count = -3;
+      }
+    }
+    if (avg_count < -1) {
+      avg_count++;
+    }
+    if (avg_count == -1){
+        for (int i = 0; i < MIC_BUFFER_SIZE; i++) {
+          mic_buf[i] = 0;
+        }
+        avg_count = 0;
+    }
   }
   /* USER CODE END 3 */
 }
@@ -297,7 +343,7 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_filter0.Init.RegularParam.FastMode = ENABLE;
   hdfsdm1_filter0.Init.RegularParam.DmaMode = ENABLE;
   hdfsdm1_filter0.Init.FilterParam.SincOrder = DFSDM_FILTER_FASTSINC_ORDER;
-  hdfsdm1_filter0.Init.FilterParam.Oversampling = 200;
+  hdfsdm1_filter0.Init.FilterParam.Oversampling = 256;
   hdfsdm1_filter0.Init.FilterParam.IntOversampling = 1;
   if (HAL_DFSDM_FilterInit(&hdfsdm1_filter0) != HAL_OK)
   {
@@ -306,7 +352,7 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_channel2.Instance = DFSDM1_Channel2;
   hdfsdm1_channel2.Init.OutputClock.Activation = ENABLE;
   hdfsdm1_channel2.Init.OutputClock.Selection = DFSDM_CHANNEL_OUTPUT_CLOCK_SYSTEM;
-  hdfsdm1_channel2.Init.OutputClock.Divider = 26;
+  hdfsdm1_channel2.Init.OutputClock.Divider = 25;
   hdfsdm1_channel2.Init.Input.Multiplexer = DFSDM_CHANNEL_EXTERNAL_INPUTS;
   hdfsdm1_channel2.Init.Input.DataPacking = DFSDM_CHANNEL_STANDARD_MODE;
   hdfsdm1_channel2.Init.Input.Pins = DFSDM_CHANNEL_FOLLOWING_CHANNEL_PINS;
