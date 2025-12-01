@@ -1,4 +1,6 @@
 #include "dpoae.h"
+#include "arm_math_types.h"
+#include <math.h>
 // #include "arm_math_types.h"
 // #include <stdint.h>
 /**
@@ -8,9 +10,9 @@
  * @param size Size of the data
  * @param max_val Maximum output value of the data
  */
-void autofit(uint32_t* data_src,int* data_out, uint16_t size, uint32_t max_val){
-    uint32_t min = 4294967295;
-    uint32_t max = 0;
+void autofit(float32_t* data_src,int* data_out, uint16_t size, uint32_t max_val){
+    float32_t min = MAXFLOAT;
+    float32_t max = 0;
     for (uint16_t i = 0; i < size; i++) {
         if (data_src[i] > max) {
           max = data_src[i];
@@ -21,7 +23,7 @@ void autofit(uint32_t* data_src,int* data_out, uint16_t size, uint32_t max_val){
       }
         for (uint16_t i = 0; i < size; i++) {
           // rescale to be between 0 and 128
-          data_out[i] = (data_src[i] - min) / ((max - min) / 128);
+          data_out[i] = (int) (data_src[i] - min) / ((max - min) / 128);
         }
 }
 /**
@@ -56,10 +58,10 @@ bool do_fft(arm_rfft_fast_instance_f32* fft_instance, uint32_t* input, float32_t
     arm_rfft_fast_f32(fft_instance, temp_buffer, temp_buffer2,0);
     arm_cmplx_mag_f32(temp_buffer2, temp_buffer, size / 2);
     for (uint16_t i = 0; i < size / 2; i++) {
-        if (temp_buffer[i] <= 0) return false;
+        if (temp_buffer[i] <= nextafterf(0.0f, 1.0f)) return false; //check for NaN, with epsilon
     }
     for (uint16_t i = 0; i < size / 2; i++) {
-        output[i] = /*20*log10*/(temp_buffer[i]);
+        output[i] = 20*log10(temp_buffer[i]);
     }
     return true;
 }

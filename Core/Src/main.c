@@ -160,7 +160,9 @@ arm_rfft_fast_instance_f32 fft;
 float32_t fft_output[MIC_BUFFER_SIZE/2];
 float32_t temp1[MIC_BUFFER_SIZE];
 float32_t temp2[MIC_BUFFER_SIZE];
-uint32_t outbuf[DISPBUF_SIZE];
+float32_t outbuf[DISPBUF_SIZE];
+uint32_t avg_buf[MIC_BUFFER_SIZE];
+int avg_count = 0;
 /* USER CODE END 0 */
 
 /**
@@ -218,14 +220,25 @@ int main(void)
       if (!ui.wavemode) {
         // check if buffer is any good
         if (sample_good(mic_buf, MIC_BUFFER_SIZE, &fft, temp1, temp2, fft_output)) {
-          for (int i = 0; i < DISPBUF_SIZE; i++) {
-            outbuf[i] =
-                (uint32_t)fft_output[i+20]; // skip high noise bins
+          if (avg_count < 10){//10 samples max
+            for (int i = 0; i < MIC_BUFFER_SIZE; i++) {
+              avg_buf[i] += mic_buf[i];
+            }
+            avg_count++;
+          } else {
+            do_fft(&fft, avg_buf, outbuf, MIC_BUFFER_SIZE, temp1, temp2);
+            for (int i = 0; i < DISPBUF_SIZE; i++) {
+              outbuf[i] = fft_output[i+20]; // skip high noise bins
+            }
+            for (int i = 0; i < MIC_BUFFER_SIZE; i++) {
+              avg_buf[i] = mic_buf[i];
+            }
+            avg_count = 0;
           }
         }
       } else {
         for (int i = 0; i < DISPBUF_SIZE; i++) {
-          outbuf[i] = mic_buf[i];
+          outbuf[i] = (float32_t) mic_buf[i];
         }
       }
       autofit(outbuf, ui.dispbuf, DISPBUF_SIZE, 128);
@@ -335,7 +348,7 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_filter0.Init.RegularParam.Trigger = DFSDM_FILTER_SW_TRIGGER;
   hdfsdm1_filter0.Init.RegularParam.FastMode = ENABLE;
   hdfsdm1_filter0.Init.RegularParam.DmaMode = ENABLE;
-  hdfsdm1_filter0.Init.FilterParam.SincOrder = DFSDM_FILTER_FASTSINC_ORDER;
+  hdfsdm1_filter0.Init.FilterParam.SincOrder = DFSDM_FILTER_SINC3_ORDER;
   hdfsdm1_filter0.Init.FilterParam.Oversampling = 256;
   hdfsdm1_filter0.Init.FilterParam.IntOversampling = 1;
   if (HAL_DFSDM_FilterInit(&hdfsdm1_filter0) != HAL_OK)
@@ -354,7 +367,7 @@ static void MX_DFSDM1_Init(void)
   hdfsdm1_channel2.Init.Awd.FilterOrder = DFSDM_CHANNEL_FASTSINC_ORDER;
   hdfsdm1_channel2.Init.Awd.Oversampling = 1;
   hdfsdm1_channel2.Init.Offset = 0;
-  hdfsdm1_channel2.Init.RightBitShift = 0x00;
+  hdfsdm1_channel2.Init.RightBitShift = 0x02;
   if (HAL_DFSDM_ChannelInit(&hdfsdm1_channel2) != HAL_OK)
   {
     Error_Handler();
