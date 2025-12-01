@@ -59,10 +59,16 @@ void MX_I2C2_Init(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define JOY_DOWN_Pin GPIO_PIN_10
+#define JOY_DOWN_GPIO_Port GPIOI
 #define LCD_BL_CTRL_Pin GPIO_PIN_0
 #define LCD_BL_CTRL_GPIO_Port GPIOI
+#define JOY_LEFT_Pin GPIO_PIN_9
+#define JOY_LEFT_GPIO_Port GPIOI
 #define MCU_ACTIVE_Pin GPIO_PIN_15
 #define MCU_ACTIVE_GPIO_Port GPIOH
+#define JOY_UP_Pin GPIO_PIN_8
+#define JOY_UP_GPIO_Port GPIOI
 #define LCD_TE_Pin GPIO_PIN_7
 #define LCD_TE_GPIO_Port GPIOH
 #define LCD_TE_EXTI_IRQn EXTI9_5_IRQn
@@ -77,6 +83,8 @@ void MX_I2C2_Init(void);
 #define VSYNC_FREQ_GPIO_Port GPIOG
 #define RENDER_TIME_Pin GPIO_PIN_7
 #define RENDER_TIME_GPIO_Port GPIOG
+#define JOY_RIGHT_Pin GPIO_PIN_11
+#define JOY_RIGHT_GPIO_Port GPIOF
 
 /* USER CODE BEGIN Private defines */
 

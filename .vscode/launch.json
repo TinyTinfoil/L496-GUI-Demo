@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "cwd": "${workspaceFolder}",
+            "executable": "./build/Release/STM32L496G-DISCO.elf",
+            "name": "Release debug",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "stlink"
+        },
+        {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
             "executable": "./build/Debug/STM32L496G-DISCO.elf",
@@ -13,5 +22,6 @@
             "runToEntryPoint": "main",
             "servertype": "stlink"
         }
+
     ]
 }

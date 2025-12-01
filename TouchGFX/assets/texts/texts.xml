@@ -6,6 +6,12 @@
   <Texts>
     <TextGroup Id="Group1" />
     <TextGroup Id="Unsorted">
+      <Text Id="ResourceId1" Alignment="Left" TypographyId="Default">
+        <Translation Language="GB">FFT view</Translation>
+      </Text>
+      <Text Id="ResourceId2" Alignment="Left" TypographyId="Default">
+        <Translation Language="GB">Wave view</Translation>
+      </Text>
       <Text Id="__SingleUse_V5ZR" Alignment="Center" TypographyId="Default">
         <Translation Language="GB">Update graph</Translation>
       </Text>

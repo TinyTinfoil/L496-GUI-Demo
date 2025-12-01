@@ -33,7 +33,7 @@
           },
           {
             "Type": "ButtonWithLabel",
-            "Name": "buttonWithLabel1",
+            "Name": "button1",
             "Y": 190,
             "Width": 240,
             "Height": 50,
@@ -59,12 +59,210 @@
             "InteractionName": "Interaction1",
             "Trigger": {
               "Type": "TriggerOnEveryTick",
-              "TickCount": 50
+              "TickCount": 5
             },
             "Action": {
               "Type": "ActionExecuteCode",
-              "Includes": "#include <gui/common/dispbuf.c>",
-              "Code": "for (int i=0; i < 128; i++){\r\ngraph1.addDataPoint(i,dispbuf[i]);\r\n}"
+              "Includes": "#include <gui/common/ui_bridge.h>",
+              "Code": "for (int i=0; i < 128; i++){\r\ngraph1.addDataPoint(i,ui.dispbuf[i]);\r\n}"
+            }
+          },
+          {
+            "InteractionName": "Interaction2",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 2
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionSlide",
+              "ScreenTransitionDirection": "East",
+              "ActionComponent": "Screen2"
+            }
+          },
+          {
+            "InteractionName": "Interaction3",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 1
+            },
+            "Action": {
+              "Type": "ActionExecuteCode",
+              "Includes": "#include <gui/common/ui_bridge.h>",
+              "Code": "ui.wavemode = false;\r\nbutton1.setLabelText(T_RESOURCEID1);\r\nbutton1.invalidate();"
+            }
+          },
+          {
+            "InteractionName": "Interaction4",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 4
+            },
+            "Action": {
+              "Type": "ActionExecuteCode",
+              "Includes": "#include <gui/common/ui_bridge.h>",
+              "Code": "ui.wavemode = true;\r\nbutton1.setLabelText(T_RESOURCEID2);\r\nbutton1.invalidate();"
+            }
+          }
+        ]
+      },
+      {
+        "Name": "Screen2",
+        "CanvasBufferSize": 3600,
+        "Components": [
+          {
+            "Type": "Circle",
+            "Name": "circle1",
+            "X": 52,
+            "Y": 40,
+            "Width": 137,
+            "Height": 145,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "CenterX": 65.6,
+            "CenterY": 68.0,
+            "Radius": 61.5,
+            "EndAngle": 360.0,
+            "CapPrecision": "Butt"
+          },
+          {
+            "Type": "Shape",
+            "Name": "R_ear",
+            "X": 142,
+            "Y": 72,
+            "Width": 80,
+            "Height": 80,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Points": [
+              {
+                "X": 44.1
+              },
+              {
+                "X": 80.0,
+                "Y": 40.0
+              },
+              {
+                "X": 40.0,
+                "Y": 80.0
+              },
+              {
+                "Y": 40.0
+              }
+            ],
+            "XScale": 1.0,
+            "YScale": 1.0
+          },
+          {
+            "Type": "Shape",
+            "Name": "L_ear",
+            "X": 12,
+            "Y": 72,
+            "Width": 80,
+            "Height": 80,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Points": [
+              {
+                "X": 44.1
+              },
+              {
+                "X": 80.0,
+                "Y": 40.0
+              },
+              {
+                "X": 40.0,
+                "Y": 80.0
+              },
+              {
+                "Y": 40.0
+              }
+            ],
+            "XScale": 1.0,
+            "YScale": 1.0
+          },
+          {
+            "Type": "Shape",
+            "Name": "shape1",
+            "X": 94,
+            "Y": 179,
+            "Width": 52,
+            "Height": 55,
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Points": [
+              {
+                "X": 80.0
+              },
+              {
+                "X": 80.0,
+                "Y": 80.0
+              },
+              {
+                "Y": 80.0
+              },
+              {}
+            ],
+            "XScale": 1.0,
+            "YScale": 1.0
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "Interaction1",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 1
+            },
+            "Action": {
+              "Type": "ActionSetShapeColor",
+              "Color": {
+                "Green": 8,
+                "Blue": 252
+              },
+              "ActionComponent": "L_ear"
+            }
+          },
+          {
+            "InteractionName": "Interaction2",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 2
+            },
+            "Action": {
+              "Type": "ActionSetShapeColor",
+              "Color": {
+                "Green": 110,
+                "Blue": 255
+              },
+              "ActionComponent": "R_ear"
+            }
+          },
+          {
+            "InteractionName": "Interaction3",
+            "Trigger": {
+              "Type": "TriggerPhysicalButtonClicked",
+              "ButtonKey": 3
+            },
+            "Action": {
+              "Type": "ActionSetShapeColor",
+              "Color": {
+                "Green": 255,
+                "Blue": 38
+              },
+              "ActionComponent": "shape1"
             }
           }
         ]

@@ -710,6 +710,9 @@ set(dsp_Src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/CMSIS-DSP/Source/WindowFunctions/arm_welch_f32.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/CMSIS-DSP/Source/WindowFunctions/arm_welch_f64.c
 )
+set(dpoae_Src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/dpoae.c
+)
 
 # Link directories setup
 set(MX_LINK_DIRS
@@ -719,7 +722,7 @@ set(MX_LINK_DIRS
 set(MX_LINK_LIBS 
     STM32_Drivers
     ${TOOLCHAIN_LINK_LIBRARIES}
-    dsp	
+    dsp	dpoae	
 )
 # Interface library for includes and symbols
 add_library(stm32cubemx INTERFACE)
@@ -739,6 +742,11 @@ endif()
 add_library(dsp OBJECT)
 target_sources(dsp PRIVATE ${dsp_Src})
 target_link_libraries(dsp PUBLIC stm32cubemx)
+
+# Create dpoae static library
+add_library(dpoae OBJECT)
+target_sources(dpoae PRIVATE ${dpoae_Src})
+target_link_libraries(dpoae PUBLIC stm32cubemx)
 
 # Add STM32CubeMX generated application sources to the project
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${MX_Application_Src})

@@ -15,15 +15,16 @@
 //     uint16_t size;
 //     };
 // }
-#include <gui/common/dispbuf.c>
-int dispbuf[128];
+#include <gui/common/ui_bridge.h>
+struct ui_bridge ui;
 Model::Model() : modelListener(0)
 {
     // messageQ = xQueueCreate(1, sizeof(struct msg_graph));
-    for (uint16_t i = 0; i < 128; i++)
+    for (uint16_t i = 0; i < DISPBUF_SIZE; i++)
     {
-        dispbuf[i] = i;
+        ui.dispbuf[i] = i;
     }
+    ui.wavemode = false;
 }
 
 // struct msg_graph xmsgBuffer;
